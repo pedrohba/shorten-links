@@ -37,6 +37,34 @@ void main() {
         apiClient.dispose();
         expect(() => ApiClient(), throwsException);
       });
+
+      test('should maintain singleton behavior across multiple calls', () {
+        // Arrange
+        final instances = <ApiClient>[];
+
+        // Act - Create multiple instances
+        for (int i = 0; i < 5; i++) {
+          instances.add(ApiClient());
+        }
+
+        // Assert - All should be the same instance
+        for (int i = 1; i < instances.length; i++) {
+          expect(identical(instances[0], instances[i]), isTrue);
+        }
+      });
+
+      test('should dispose client when dispose is called', () {
+        // Arrange
+        final testMockClient = MockClient();
+        ApiClient.init(baseUrl: baseUrl, client: testMockClient);
+        final testApiClient = ApiClient();
+
+        // Act
+        testApiClient.dispose();
+
+        // Assert
+        verify(testMockClient.close()).called(1);
+      });
     });
 
     group('GET requests', () {
