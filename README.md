@@ -1,6 +1,6 @@
-# shorten_links
+# shorten-links
 
-A new Flutter project.
+A Flutter project for URL shortening.
 
 ## Getting Started
 
