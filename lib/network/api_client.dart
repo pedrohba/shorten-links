@@ -109,11 +109,6 @@ class ApiClient {
 
   void dispose() {
     _client.close();
-  }
-
-  // Method to reset singleton instance (useful for testing)
-  static void resetInstance() {
-    _instance?.dispose();
     _instance = null;
   }
 }
