@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'exceptions/api_exception.dart';
-import 'exceptions/http_exception.dart';
+import 'http_exception.dart';
 
 class ApiClient {
   static ApiClient? _instance;
@@ -34,62 +33,45 @@ class ApiClient {
     String endpoint, {
     Map<String, String>? queryParameters,
   }) async {
-    try {
-      final uri = Uri.parse('$_baseUrl$endpoint');
-      final uriWithParams =
-          queryParameters != null && queryParameters.isNotEmpty
-          ? uri.replace(queryParameters: queryParameters)
-          : uri;
+    final uri = Uri.parse('$_baseUrl$endpoint');
+    final uriWithParams = queryParameters != null && queryParameters.isNotEmpty
+        ? uri.replace(queryParameters: queryParameters)
+        : uri;
 
-      final response = await _client.get(uriWithParams, headers: _headers);
-      return _handleResponse(response);
-    } catch (e) {
-      throw ApiException('GET request failed: $e');
-    }
+    final response = await _client.get(uriWithParams, headers: _headers);
+    return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> post(
     String endpoint,
     Map<String, dynamic> body,
   ) async {
-    try {
-      final response = await _client.post(
-        Uri.parse('$_baseUrl$endpoint'),
-        headers: _headers,
-        body: json.encode(body),
-      );
-      return _handleResponse(response);
-    } catch (e) {
-      throw ApiException('POST request failed: $e');
-    }
+    final response = await _client.post(
+      Uri.parse('$_baseUrl$endpoint'),
+      headers: _headers,
+      body: json.encode(body),
+    );
+    return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> put(
     String endpoint,
     Map<String, dynamic> body,
   ) async {
-    try {
-      final response = await _client.put(
-        Uri.parse('$_baseUrl$endpoint'),
-        headers: _headers,
-        body: json.encode(body),
-      );
-      return _handleResponse(response);
-    } catch (e) {
-      throw ApiException('PUT request failed: $e');
-    }
+    final response = await _client.put(
+      Uri.parse('$_baseUrl$endpoint'),
+      headers: _headers,
+      body: json.encode(body),
+    );
+    return _handleResponse(response);
   }
 
   Future<Map<String, dynamic>> delete(String endpoint) async {
-    try {
-      final response = await _client.delete(
-        Uri.parse('$_baseUrl$endpoint'),
-        headers: _headers,
-      );
-      return _handleResponse(response);
-    } catch (e) {
-      throw ApiException('DELETE request failed: $e');
-    }
+    final response = await _client.delete(
+      Uri.parse('$_baseUrl$endpoint'),
+      headers: _headers,
+    );
+    return _handleResponse(response);
   }
 
   Map<String, dynamic> _handleResponse(http.Response response) {
