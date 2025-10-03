@@ -1,16 +1,34 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'exceptions/api_exception.dart';
+import 'exceptions/http_exception.dart';
 
 class ApiClient {
-  static const String _baseUrl =
-      'https://url-shortener-server.onrender.com/api';
+  static ApiClient? _instance;
+  final String _baseUrl;
   final http.Client _client;
 
   static const Map<String, String> _headers = {
     'Content-Type': 'application/json',
   };
 
-  ApiClient({http.Client? client}) : _client = client ?? http.Client();
+  // Private constructor
+  ApiClient._({required String baseUrl, required http.Client client})
+    : _baseUrl = baseUrl,
+      _client = client;
+
+  // Factory constructor to return singleton instance
+  factory ApiClient() {
+    if (_instance == null) {
+      throw Exception('ApiClient not initialized');
+    }
+    return _instance!;
+  }
+
+  // Initialize the singleton with required parameters
+  static void init({required String baseUrl, http.Client? client}) {
+    _instance = ApiClient._(baseUrl: baseUrl, client: client ?? http.Client());
+  }
 
   Future<Map<String, dynamic>> get(
     String endpoint, {
@@ -81,9 +99,10 @@ class ApiClient {
       }
       return json.decode(response.body) as Map<String, dynamic>;
     } else {
-      throw ApiException(
-        'Request failed with status: ${response.statusCode}. '
-        'Response: ${response.body}',
+      throw HttpException(
+        statusCode: response.statusCode,
+        responseBody: response.body,
+        message: 'HTTP request failed with status ${response.statusCode}',
       );
     }
   }
@@ -91,12 +110,10 @@ class ApiClient {
   void dispose() {
     _client.close();
   }
-}
 
-class ApiException implements Exception {
-  final String message;
-  ApiException(this.message);
-
-  @override
-  String toString() => 'ApiException: $message';
+  // Method to reset singleton instance (useful for testing)
+  static void resetInstance() {
+    _instance?.dispose();
+    _instance = null;
+  }
 }
