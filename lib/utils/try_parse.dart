@@ -1,4 +1,4 @@
-import 'package:shorten_links/domain/parse_exception.dart';
+import 'package:shorten_links/domain/exceptions/parse_exception.dart';
 
 T tryParse<T>(
   T Function(Map<String, dynamic> json) fromJson,

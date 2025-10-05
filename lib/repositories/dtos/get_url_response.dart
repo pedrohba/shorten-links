@@ -1,4 +1,4 @@
-import 'package:shorten_links/try_parse.dart';
+import 'package:shorten_links/utils/try_parse.dart';
 
 class GetUrlResponse {
   final String url;

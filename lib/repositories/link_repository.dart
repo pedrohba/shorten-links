@@ -1,7 +1,7 @@
 import 'package:shorten_links/network/api_client.dart';
-import 'package:shorten_links/domain/link.dart';
+import 'package:shorten_links/domain/models/link.dart';
 import 'package:shorten_links/repositories/dtos/get_url_response.dart';
-import 'package:shorten_links/repositories/dtos/shorten_link_response.dart';
+import 'package:shorten_links/repositories/dtos/shorten_url_response.dart';
 
 class LinkRepository {
   final ApiClient _apiClient;

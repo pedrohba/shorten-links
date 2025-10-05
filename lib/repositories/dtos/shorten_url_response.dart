@@ -1,5 +1,5 @@
-import 'package:shorten_links/domain/link.dart';
-import 'package:shorten_links/try_parse.dart';
+import 'package:shorten_links/domain/models/link.dart';
+import 'package:shorten_links/utils/try_parse.dart';
 
 class ShortenUrlResponse {
   final String alias;
@@ -11,7 +11,7 @@ class ShortenUrlResponse {
     return tryParse(
       (json) => ShortenUrlResponse(
         alias: json['alias'],
-        links: Links.fromJson(json['links']),
+        links: Links.fromJson(json['_links']),
       ),
       json,
     );
