@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'pages/home_page.dart';
+import 'package:shorten_links/network/api_client.dart';
+import 'package:shorten_links/pages/home_view_model.dart';
+import 'package:shorten_links/repositories/link_repository_remote.dart';
+import 'pages/home_screen.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -7,11 +10,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Shorten Links',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: HomeScreen(HomeViewModel(LinkRepositoryRemote(ApiClient()))),
     );
   }
 }

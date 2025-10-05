@@ -5,20 +5,21 @@ import 'package:shorten_links/domain/models/link.dart';
 import 'package:shorten_links/domain/exceptions/parse_exception.dart';
 import 'package:shorten_links/network/api_client.dart';
 import 'package:shorten_links/network/http_exception.dart';
-import 'package:shorten_links/repositories/link_repository.dart';
+import 'package:shorten_links/repositories/link_repository_remote.dart';
+import 'package:shorten_links/utils/result.dart';
 
 // Generate mocks with: flutter packages pub run build_runner build
 @GenerateMocks([ApiClient])
-import 'link_repository_test.mocks.dart';
+import 'link_repository_remote_test.mocks.dart';
 
 void main() {
-  group('LinkRepository', () {
+  group('LinkRepositoryRemote', () {
     late MockApiClient mockApiClient;
-    late LinkRepository linkRepository;
+    late LinkRepositoryRemote linkRepository;
 
     setUp(() {
       mockApiClient = MockApiClient();
-      linkRepository = LinkRepository(mockApiClient);
+      linkRepository = LinkRepositoryRemote(mockApiClient);
     });
 
     group('shortenUrl', () {
@@ -41,10 +42,18 @@ void main() {
         final result = await linkRepository.shortenUrl(url);
 
         // Assert
-        expect(result, isA<Link>());
-        expect(result.alias, equals('abc123'));
-        expect(result.url, equals('https://api.example.com/alias/abc123'));
-        expect(result.shortUrl, equals('https://short.ly/abc123'));
+        expect(result, isA<Ok<Link>>());
+        switch (result) {
+          case Ok<Link>():
+            expect(result.value.alias, equals('abc123'));
+            expect(
+              result.value.url,
+              equals('https://api.example.com/alias/abc123'),
+            );
+            expect(result.value.shortUrl, equals('https://short.ly/abc123'));
+          case Error<Link>():
+            fail('Expected Ok result but got Error: ${result.error}');
+        }
         verify(mockApiClient.post('/alias', {'url': url})).called(1);
       });
 
@@ -61,11 +70,17 @@ void main() {
           mockApiClient.post('/alias', {'url': url}),
         ).thenThrow(httpException);
 
-        // Act & Assert
-        expect(
-          () => linkRepository.shortenUrl(url),
-          throwsA(isA<HttpException>()),
-        );
+        // Act
+        final result = await linkRepository.shortenUrl(url);
+
+        // Assert
+        expect(result, isA<Error<Link>>());
+        switch (result) {
+          case Ok<Link>():
+            fail('Expected Error result but got Ok: ${result.value}');
+          case Error<Link>():
+            expect(result.error, isA<HttpException>());
+        }
         verify(mockApiClient.post('/alias', {'url': url})).called(1);
       });
 
@@ -83,11 +98,17 @@ void main() {
             mockApiClient.post('/alias', {'url': url}),
           ).thenAnswer((_) async => invalidJsonResponse);
 
-          // Act & Assert
-          expect(
-            () => linkRepository.shortenUrl(url),
-            throwsA(isA<ParseException>()),
-          );
+          // Act
+          final result = await linkRepository.shortenUrl(url);
+
+          // Assert
+          expect(result, isA<Error<Link>>());
+          switch (result) {
+            case Ok<Link>():
+              fail('Expected Error result but got Ok: ${result.value}');
+            case Error<Link>():
+              expect(result.error, isA<ParseException>());
+          }
           verify(mockApiClient.post('/alias', {'url': url})).called(1);
         },
       );
@@ -107,7 +128,13 @@ void main() {
         final result = await linkRepository.getOriginalUrl(alias);
 
         // Assert
-        expect(result, equals('https://example.com'));
+        expect(result, isA<Ok<String>>());
+        switch (result) {
+          case Ok<String>():
+            expect(result.value, equals('https://example.com'));
+          case Error<String>():
+            fail('Expected Ok result but got Error: ${result.error}');
+        }
         verify(mockApiClient.get('/alias/$alias')).called(1);
       });
 
@@ -122,11 +149,17 @@ void main() {
 
         when(mockApiClient.get('/alias/$alias')).thenThrow(httpException);
 
-        // Act & Assert
-        expect(
-          () => linkRepository.getOriginalUrl(alias),
-          throwsA(isA<HttpException>()),
-        );
+        // Act
+        final result = await linkRepository.getOriginalUrl(alias);
+
+        // Assert
+        expect(result, isA<Error<String>>());
+        switch (result) {
+          case Ok<String>():
+            fail('Expected Error result but got Ok: ${result.value}');
+          case Error<String>():
+            expect(result.error, isA<HttpException>());
+        }
         verify(mockApiClient.get('/alias/$alias')).called(1);
       });
 
@@ -144,11 +177,17 @@ void main() {
             mockApiClient.get('/alias/$alias'),
           ).thenAnswer((_) async => invalidJsonResponse);
 
-          // Act & Assert
-          expect(
-            () => linkRepository.getOriginalUrl(alias),
-            throwsA(isA<ParseException>()),
-          );
+          // Act
+          final result = await linkRepository.getOriginalUrl(alias);
+
+          // Assert
+          expect(result, isA<Error<String>>());
+          switch (result) {
+            case Ok<String>():
+              fail('Expected Error result but got Ok: ${result.value}');
+            case Error<String>():
+              expect(result.error, isA<ParseException>());
+          }
           verify(mockApiClient.get('/alias/$alias')).called(1);
         },
       );
