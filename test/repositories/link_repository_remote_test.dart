@@ -8,7 +8,6 @@ import 'package:shorten_links/network/http_exception.dart';
 import 'package:shorten_links/repositories/link_repository_remote.dart';
 import 'package:shorten_links/utils/result.dart';
 
-// Generate mocks with: flutter packages pub run build_runner build
 @GenerateMocks([ApiClient])
 import 'link_repository_remote_test.mocks.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shorten_links/pages/home_view_model.dart';
-import 'package:shorten_links/pages/widgets/link_list_tile.dart';
+import 'package:shorten_links/pages/widgets/links_list_view.dart';
 import 'package:shorten_links/pages/widgets/url_input_field.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -36,39 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           body: SafeArea(
-            child: Builder(
-              builder: (context) {
-                if (state.links.isEmpty) {
-                  return const Center(
-                    child: Text(
-                      'No links found. Please add a link to shorten.',
-                    ),
-                  );
-                }
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'Recently shortened links',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Expanded(
-                      child: ListView.separated(
-                        separatorBuilder: (context, index) => const Divider(),
-                        itemCount: state.links.length,
-                        itemBuilder: (context, index) {
-                          final link = state.links[index];
-                          return LinkListTile(link: link);
-                        },
-                      ),
-                    ),
-                  ],
-                );
-              },
+            child: LinksListView(
+              links: state.links,
+              emptyMessage: 'No links found. Please add a link to shorten.',
             ),
           ),
         );

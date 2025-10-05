@@ -7,7 +7,6 @@ import 'package:http/http.dart' as http;
 import 'package:shorten_links/network/api_client.dart';
 import 'package:shorten_links/network/http_exception.dart';
 
-// Generate mocks with: flutter packages pub run build_runner build
 @GenerateMocks([http.Client])
 import 'api_client_test.mocks.dart';
 
