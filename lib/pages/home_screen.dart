@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:shorten_links/pages/home_view_model.dart';
 import 'package:shorten_links/pages/widgets/links_list_view.dart';
 import 'package:shorten_links/pages/widgets/url_input_field.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen(this.viewModel, {super.key});
-
-  final HomeViewModel viewModel;
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -15,7 +14,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _urlController = TextEditingController();
 
-  HomeViewModel get viewModel => widget.viewModel;
+  HomeViewModel get viewModel => context.read<HomeViewModel>();
 
   @override
   Widget build(BuildContext context) {

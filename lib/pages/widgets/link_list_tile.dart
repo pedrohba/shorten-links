@@ -13,14 +13,23 @@ class LinkListTile extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(link.url, style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            link.url,
+            maxLines: 2,
+            style: Theme.of(context).textTheme.titleMedium,
+            overflow: TextOverflow.ellipsis,
+          ),
           Text(
             'Alias: ${link.alias}',
             style: Theme.of(context).textTheme.bodyMedium,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           Text(
             'Short URL: ${link.shortUrl}',
             style: Theme.of(context).textTheme.bodyMedium,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),

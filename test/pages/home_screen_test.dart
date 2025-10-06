@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
+import 'package:provider/provider.dart';
 import 'package:shorten_links/domain/models/link.dart';
 import 'package:shorten_links/pages/home_screen.dart';
 import 'package:shorten_links/pages/home_view_model.dart';
 import 'package:shorten_links/pages/home_state.dart';
 import 'package:shorten_links/pages/widgets/links_list_view.dart';
 import 'package:shorten_links/pages/widgets/url_input_field.dart';
-import '../test_helpers/widget_test_helpers.dart';
 
 @GenerateMocks([HomeViewModel])
 import 'home_screen_test.mocks.dart';
@@ -31,6 +31,13 @@ void main() {
       stateNotifier.dispose();
     });
 
+    Widget createTestWidgetWithProvider() {
+      return Provider<HomeViewModel>(
+        create: (_) => mockViewModel,
+        child: const MaterialApp(home: HomeScreen()),
+      );
+    }
+
     testWidgets('should display empty state when no links', (
       WidgetTester tester,
     ) async {
@@ -42,7 +49,7 @@ void main() {
       );
 
       // Act
-      await WidgetTestHelpers.pumpPage(tester, HomeScreen(mockViewModel));
+      await tester.pumpWidget(createTestWidgetWithProvider());
 
       // Assert
       expect(find.text('Shorten Links'), findsOneWidget);
@@ -78,7 +85,7 @@ void main() {
       );
 
       // Act
-      await WidgetTestHelpers.pumpPage(tester, HomeScreen(mockViewModel));
+      await tester.pumpWidget(createTestWidgetWithProvider());
 
       // Assert
       expect(find.text('Recently shortened links'), findsOneWidget);
@@ -96,7 +103,7 @@ void main() {
       );
 
       // Act
-      await WidgetTestHelpers.pumpPage(tester, HomeScreen(mockViewModel));
+      await tester.pumpWidget(createTestWidgetWithProvider());
 
       // Assert
       final urlInputField = tester.widget<UrlInputField>(
@@ -116,7 +123,7 @@ void main() {
       );
 
       // Act
-      await WidgetTestHelpers.pumpPage(tester, HomeScreen(mockViewModel));
+      await tester.pumpWidget(createTestWidgetWithProvider());
 
       // Assert
       final urlInputField = tester.widget<UrlInputField>(
@@ -136,7 +143,7 @@ void main() {
       );
 
       // Act
-      await WidgetTestHelpers.pumpPage(tester, HomeScreen(mockViewModel));
+      await tester.pumpWidget(createTestWidgetWithProvider());
       await tester.pumpAndSettle();
 
       // Assert
@@ -153,7 +160,7 @@ void main() {
         isShortening: false,
         error: null,
       );
-      await WidgetTestHelpers.pumpPage(tester, HomeScreen(mockViewModel));
+      await tester.pumpWidget(createTestWidgetWithProvider());
       await tester.enterText(find.byType(TextField), 'https://example.com');
 
       // Act
@@ -174,7 +181,7 @@ void main() {
         error: null,
       );
 
-      await WidgetTestHelpers.pumpPage(tester, HomeScreen(mockViewModel));
+      await tester.pumpWidget(createTestWidgetWithProvider());
 
       // Act - tap send button without entering text
       await tester.tap(find.byIcon(Icons.send_rounded));

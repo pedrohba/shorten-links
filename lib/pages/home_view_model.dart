@@ -12,6 +12,7 @@ class HomeViewModel {
 
   final LinkRepository _linkRepository;
   final ValueNotifier<HomeState> _state = ValueNotifier(HomeState.initial());
+
   ValueListenable<HomeState> get state => _state;
   List<Link> get links => _state.value.links;
 
@@ -47,7 +48,7 @@ class HomeViewModel {
 
   void _emitSuccess(Link link) {
     _state.value = HomeState(
-      links: [...links, link],
+      links: [link, ...links],
       isShortening: false,
       error: null,
     );
